@@ -1,3 +1,80 @@
+**Steps to Run in Docker**
+
+Here's how to set this up, step-by-step:
+
+1.  **Ensure Docker is Installed**
+    -   Make sure you have Docker Desktop installed on your machine, or Docker Engine is running on your server.
+
+2.  **Navigate to the Project Root**
+    -   Open your terminal or command prompt.
+    -   Navigate to the directory where you downloaded the forked repository. This directory should contain files like `Dockerfile` and `pdf2zh/`.
+
+3.  **Build the Docker Image**
+    -   Run the following command to build the Docker image:
+
+        ```bash
+        docker build -t pdfmathtranslate .
+        ```
+
+    -   **Explanation:**
+        -   `docker build`: This command initiates the Docker image build process.
+        -   `-t pdfmathtranslate`: This tags (names) the image as `pdfmathtranslate`. You can use a different name.
+        -   `.`: This specifies that the Dockerfile is located in the current directory.
+
+4.  **Run the Docker Container**
+    -   After building the image, run the following command to start the container:
+
+        ```bash
+        docker run -p 7860:7860 pdfmathtranslate
+        ```
+
+    -   **Explanation:**
+        -   `docker run`: This command runs a new container.
+        -   `-p 7860:7860`: This maps port 7860 on your host machine to port 7860 inside the container (the port the GUI uses). You can use a different port if you need.
+        -   `pdfmathtranslate`: The name of the Docker image you built earlier.
+
+5.  **Access the GUI**
+    -   Open your web browser and go to `http://localhost:7860` (or `http://127.0.0.1:7860` if you encounter issues).
+    -   You should see the web-based GUI.
+
+**How to Use the CLI Inside Docker**
+
+Sometimes you might want to run the command-line tool directly within the Docker container. Here's how:
+
+1.  **Run a Container with Interactive Mode:**
+    ```bash
+    docker run -it pdfmathtranslate /bin/bash
+    ```
+    -   `-it`: Starts an interactive terminal session in the container.
+    -   `/bin/bash`: Starts a bash shell within the container.
+
+2.  **Execute the CLI Command:**
+    -   Once inside the container's shell, you can execute the `pdf2zh.py` script like this:
+       ```bash
+        python3 pdf2zh/pdf2zh.py -h
+        ```
+        This command will show the usage of the CLI.
+        Example Usage:
+        ```bash
+        python3 pdf2zh/pdf2zh.py pdf2zh/test.pdf -o output -li en -lo zh
+       ```
+    - Replace `pdf2zh/test.pdf` with the path to your PDF file inside the container, and use the needed params
+
+**Important Notes:**
+
+*   **API Keys:** If you plan to use services like DeepL, OpenAI, Azure, etc., you'll need to set their respective API keys as environment variables or use the GUI textboxes. You can see these environment variables in the files like `pdf2zh/translator.py`. The easiest way is to set them using the GUI textboxes
+*   **File Paths:** When you run the CLI inside the Docker container, files need to exist inside that container. If you don't specify the `-o` or `--output` flag in the commandline, the output will reside in your `/workspace` folder inside docker. Also, the input file needs to exist in the docker container, the easiest way to do this is to place it inside the `pdf2zh/` directory.
+*   **Docker Networking**: The `-p 7860:7860` maps the host port to the docker port. For some situations like connecting to the docker container on a remote machine or using a reverse proxy, additional steps might be needed.
+
+**Troubleshooting**
+
+-   **Port Conflicts:** If port 7860 is already in use, change the `-p` mapping to an unused port. For example, `-p 8080:7860`.
+-   **Image Build Errors:** Double-check that your Dockerfile is correct and all needed files are in the same directory as your Dockerfile, if problems continue to arise, try to remove any existing image before rebuilding by using `docker rmi pdfmathtranslate`.
+-   **GUI Access:** Check if Docker container is correctly running and you have the browser open at the correct url and port.
+
+Let me know if you encounter specific issues or want clarification on any of these steps.
+
+
 <div align="center">
 
 English | [简体中文](README_zh-CN.md) | [日本語](README_ja-JP.md)
