@@ -49,6 +49,7 @@ service_map: dict[str, BaseTranslator] = {
     "AnythingLLM": AnythingLLMTranslator,
 }
 lang_map = {
+    "Hindi": "hi",
     "Simplified Chinese": "zh",
     "Traditional Chinese": "zh-TW",
     "English": "en",
